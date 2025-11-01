@@ -1,0 +1,67 @@
+{
+  "name": "haspadar/psalm-eo-rules",
+  "description": "Psalm plugin providing Elegant Objects rules: forbids static, null, isset, empty, instanceof, promotes immutability and object composition",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.1",
+    "ext-simplexml": "*"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-latest",
+    "phpstan/phpstan": "^1.11",
+    "nunomaduro/collision": "^7.10",
+    "vimeo/psalm": "^5.25",
+    "rector/rector": "^1.2",
+    "friendsofphp/php-cs-fixer": "^3",
+    "phpunit/phpunit": "^10.5"
+  },
+  "minimum-stability": "RC",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Haspadar\\PsalmEoRules\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Haspadar\\PsalmEoRules\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit --order-by=random --random-order-seed=$(date +%s)",
+    "test-coverage": "XDEBUG_MODE=coverage php -d memory_limit=512M ./vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-filter=src",
+    "test-coverage-html": "XDEBUG_MODE=coverage php -d memory_limit=512M ./vendor/bin/phpunit --coverage-html=coverage-report --coverage-filter=src",
+    "analyze": "phpstan analyse",
+    "analyze-changed": "git diff --name-only origin/main...HEAD | grep '\\.php$' | xargs -r vendor/bin/phpstan analyse",
+    "psalm": "./vendor/bin/psalm",
+    "psalm:shepherd": "./vendor/bin/psalm --shepherd --no-diff --stats --output-format=github",
+    "fix": "vendor/bin/php-cs-fixer fix",
+    "fix-test": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "fix-changed": "git diff --name-only origin/main...HEAD | grep '\\.php$' | xargs -r vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes",
+    "refactor": "rector",
+    "test-refactor": "rector --dry-run",
+    "ci-quality": [
+      "@fix-test",
+      "@analyze",
+      "@psalm",
+      "@test",
+      "@refactor"
+    ],
+    "build": [
+      "@fix",
+      "@refactor",
+      "@analyze",
+      "@psalm",
+      "@test"
+    ]
+  },
+  "config": {
+    "platform": {
+      "php": "8.1.0"
+    },
+    "allow-plugins": {
+      "infection/extension-installer": true
+    }
+  }
+}
