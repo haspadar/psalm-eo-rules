@@ -8,6 +8,7 @@ use Rector\Set\ValueObject\SetList;
 return static function (RectorConfig $config): void {
     $config->paths([
         __DIR__ . '/src',
+        __DIR__ . '/tests',
     ]);
 
     $config->sets([
@@ -20,5 +21,6 @@ return static function (RectorConfig $config): void {
 
     $config->skip([
         __DIR__ . '/vendor',
+        __DIR__ . '/tests/Fixtures',
     ]);
 };

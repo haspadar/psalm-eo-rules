@@ -26,18 +26,8 @@ use Psalm\Plugin\EventHandler\Event\AfterClassLikeVisitEvent;
  */
 final class NoConstructorExceptionChecker implements AfterClassLikeVisitInterface
 {
-    /**
-     * Suppression code used in `@psalm-suppress`.
-     *
-     * @var string
-     */
     private const SUPPRESS = 'NoConstructorException';
 
-    /**
-     * Scans all class constructors for `throw` expressions.
-     *
-     * @param AfterClassLikeVisitEvent $event Psalm event containing class node and source
-     */
     public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
     {
         $class = $event->getStmt();
@@ -45,25 +35,43 @@ final class NoConstructorExceptionChecker implements AfterClassLikeVisitInterfac
             return;
         }
 
+        // skip entire class if suppression exists
+        if (Suppression::has($class, self::SUPPRESS)) {
+            return;
+        }
+
         foreach ($class->stmts as $stmt) {
-            if ($stmt instanceof Node\Stmt\ClassMethod
-                && strtolower($stmt->name->toString()) === '__construct') {
-                foreach ($stmt->stmts ?? [] as $subStmt) {
-                    self::inspect($subStmt, $event);
-                }
+            if (!$stmt instanceof Node\Stmt\ClassMethod) {
+                continue;
+            }
+
+            if (strtolower($stmt->name->toString()) !== '__construct') {
+                continue;
+            }
+
+            // skip constructor if suppressed
+            if (Suppression::has($stmt, self::SUPPRESS)) {
+                continue;
+            }
+
+            foreach ($stmt->stmts ?? [] as $subStmt) {
+                self::inspect($subStmt, $event, false);
             }
         }
     }
 
     /**
      * Recursively inspects AST nodes for `throw` expressions inside constructors.
-     *
-     * @param Node                     $node  Node to analyze
-     * @param AfterClassLikeVisitEvent $event Psalm event providing context
      */
-    private static function inspect(Node $node, AfterClassLikeVisitEvent $event): void
+    private static function inspect(Node $node, AfterClassLikeVisitEvent $event, bool $parentSuppressed): void
     {
-        if ($node instanceof Throw_ && !Suppression::has($node, self::SUPPRESS)) {
+        $suppressed = $parentSuppressed || Suppression::has($node, self::SUPPRESS);
+
+        if ($suppressed) {
+            return;
+        }
+
+        if ($node instanceof Throw_) {
             IssueBuffer::accepts(
                 new NoConstructorExceptionIssue(
                     'Throwing exceptions inside constructors violates EO rules. '
@@ -77,11 +85,11 @@ final class NoConstructorExceptionChecker implements AfterClassLikeVisitInterfac
             $child = $node->$name ?? null;
 
             if ($child instanceof Node) {
-                self::inspect($child, $event);
+                self::inspect($child, $event, $suppressed);
             } elseif (is_array($child)) {
                 foreach ($child as $sub) {
                     if ($sub instanceof Node) {
-                        self::inspect($sub, $event);
+                        self::inspect($sub, $event, $suppressed);
                     }
                 }
             }

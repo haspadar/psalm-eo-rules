@@ -15,7 +15,7 @@ final class ReturnNew implements WithoutMethods
 {
     private ?object $value = null;
 
-    public function ok(): object
+    public function fail(): object
     {
         $this->value = new stdClass();
         return $this->value;

@@ -13,7 +13,4 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 /** @psalm-suppress NoNullableType */
 final class SuppressedClass implements WithoutMethods
 {
-    public function ok(?float $value): void
-    {
-    }
 }

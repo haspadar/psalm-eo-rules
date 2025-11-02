@@ -22,11 +22,6 @@ use Psalm\Plugin\EventHandler\Event\AfterFunctionLikeAnalysisEvent;
  */
 final class NoStaticMethodDeclarationChecker implements AfterFunctionLikeAnalysisInterface
 {
-    /**
-     * Suppression code name used in `@psalm-suppress`.
-     *
-     * @var string
-     */
     private const SUPPRESS = 'NoStaticMethodDeclaration';
 
     /**
@@ -38,16 +33,13 @@ final class NoStaticMethodDeclarationChecker implements AfterFunctionLikeAnalysi
     public static function afterStatementAnalysis(AfterFunctionLikeAnalysisEvent $event): ?bool
     {
         $storage = $event->getFunctionLikeStorage();
-        $suppressed = in_array(self::SUPPRESS, $storage->suppressed_issues, true);
+
+        $isSuppressed = in_array(self::SUPPRESS, $storage->suppressed_issues, true);
 
         /** @psalm-suppress UndefinedPropertyFetch, InternalProperty */
         $isStatic = property_exists($storage, 'is_static') && $storage->is_static;
 
-        if (
-            !$suppressed
-            && $isStatic
-            && $storage->location instanceof CodeLocation
-        ) {
+        if ($isStatic && !$isSuppressed && $storage->location instanceof CodeLocation) {
             IssueBuffer::accepts(
                 new NoStaticMethodDeclarationIssue(
                     'Static method declarations violate EO rules.',

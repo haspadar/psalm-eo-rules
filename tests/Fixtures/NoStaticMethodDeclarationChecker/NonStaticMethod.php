@@ -12,7 +12,4 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 final class NonStaticMethod implements WithoutMethods
 {
-    public function ok(): void
-    {
-    }
 }

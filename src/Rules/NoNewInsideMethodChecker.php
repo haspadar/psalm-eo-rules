@@ -69,7 +69,21 @@ final class NoNewInsideMethodChecker implements AfterClassLikeVisitInterface
      */
     private static function scan(Node $node, AfterClassLikeVisitEvent $event, ClassMethod $method): void
     {
-        if ($node instanceof New_ && !Suppression::has($node, self::SUPPRESS)) {
+        if ($node instanceof New_) {
+            // respect suppression on the method itself
+            if (Suppression::has($method, self::SUPPRESS)) {
+                return;
+            }
+
+            // walk up AST to check any parent-level suppressions
+            $current = $node;
+            do {
+                if (Suppression::has($current, self::SUPPRESS)) {
+                    return;
+                }
+                $current = $current->getAttribute('parent');
+            } while ($current instanceof Node);
+
             $parent = $node->getAttribute('parent');
             $fqcn = $node->class instanceof Node\Name ? $node->class->toString() : null;
 

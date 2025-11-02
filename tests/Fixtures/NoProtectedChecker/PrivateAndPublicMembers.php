@@ -8,8 +8,4 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 final class PrivateAndPublicMembers implements WithoutMethods
 {
-    private readonly int $id;
-    public function ok(): void
-    {
-    }
 }

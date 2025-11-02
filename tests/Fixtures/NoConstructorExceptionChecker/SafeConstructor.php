@@ -10,13 +10,11 @@ namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoConstructorExceptionChecker;
 
 use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
-/**
- * @psalm-suppress UnusedVariable
- */
 final class SafeConstructor implements WithoutMethods
 {
     public function __construct()
     {
-        $a = 1;
+        $value = strlen('ok');
+        assert($value > 0);
     }
 }

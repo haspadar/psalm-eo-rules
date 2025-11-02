@@ -12,10 +12,5 @@ namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoMutablePropertyChecker;
 final class SuppressedMutableProperty
 {
     /** @psalm-suppress NoMutableProperty */
-    public int $id;
-
-    public function __construct()
-    {
-        $this->id = 1;
-    }
+    public int $id = 1;
 }

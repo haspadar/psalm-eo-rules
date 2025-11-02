@@ -10,7 +10,7 @@ use Symfony\Component\Process\Process;
 final class PsalmRunner
 {
     public function __construct(
-        private string $binary = 'vendor/bin/psalm',
+        private readonly string $binary = 'vendor/bin/psalm',
     ) {
     }
 
@@ -30,8 +30,13 @@ final class PsalmRunner
             '--no-cache',
             '--no-progress',
             '--config=' . $config,
-            $path,
         ];
+
+        if ($extraArgs !== []) {
+            $args = array_merge($args, $extraArgs);
+        }
+
+        $args[] = $path;
 
         $process = new Process($args, getcwd());
         $process->run();

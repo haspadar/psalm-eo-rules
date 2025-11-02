@@ -11,7 +11,10 @@ namespace Haspadar\PsalmEoRules\Rules\Issue;
 use Psalm\Issue\CodeIssue;
 
 /**
- * Reported when a class implements an interface.
+ * Reported when a concrete class does not implement any interface.
+ *
+ * EO rule: every concrete class must implement at least one interface
+ * to preserve polymorphism and explicit contracts.
  */
 final class NoInterfaceImplementationIssue extends CodeIssue
 {

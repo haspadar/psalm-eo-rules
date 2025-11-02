@@ -10,9 +10,4 @@ final class SuppressedProtected implements WithoutMethods
 {
     /** @psalm-suppress NoProtected */
     protected readonly int $id;
-
-    /** @psalm-suppress NoProtected */
-    protected function hidden(): void
-    {
-    }
 }

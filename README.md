@@ -2,6 +2,7 @@
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.1-blue)](https://www.php.net/releases/8.1/)
 [![CI](https://github.com/haspadar/psalm-eo-rules/actions/workflows/ci.yml/badge.svg)](https://github.com/haspadar/psalm-eo-rules/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/haspadar/psalm-eo-rules/branch/main/graph/badge.svg)](https://codecov.io/gh/haspadar/psalm-eo-rules)
 
 ---
 
@@ -83,6 +84,26 @@ Additional helpers:
 - `composer fix` – apply coding standards
 
 The CI workflow mirrors these steps.
+
+## 🧱 Local Development
+
+To build the container with Xdebug enabled for local debugging:
+
+```bash
+docker compose build --build-arg INSTALL_XDEBUG=true
+```
+
+or, without Compose:
+
+```bash
+docker build --build-arg INSTALL_XDEBUG=true -t psalm-eo-rules-dev .
+```
+
+Then run:
+
+```bash
+docker run -it --rm -v $(pwd):/app psalm-eo-rules-dev
+```
 
 ---
 

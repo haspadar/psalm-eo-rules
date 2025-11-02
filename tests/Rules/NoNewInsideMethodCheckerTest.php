@@ -8,15 +8,15 @@ declare(strict_types=1);
 
 namespace Haspadar\PsalmEoRules\Tests\Rules;
 
+use Haspadar\PsalmEoRules\Rules\NoNewInsideMethodChecker;
 use Haspadar\PsalmEoRules\Tests\Constraint\PsalmAnalysisConstraint;
 use Haspadar\PsalmEoRules\Tests\PsalmRunner;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Haspadar\PsalmEoRules\Rules\NoNewInsideMethodChecker
- */
+#[CoversClass(NoNewInsideMethodChecker::class)]
 final class NoNewInsideMethodCheckerTest extends TestCase
 {
     private PsalmRunner $runner;

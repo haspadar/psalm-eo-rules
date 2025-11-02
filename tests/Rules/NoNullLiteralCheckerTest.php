@@ -8,15 +8,15 @@ declare(strict_types=1);
 
 namespace Haspadar\PsalmEoRules\Tests\Rules;
 
+use Haspadar\PsalmEoRules\Rules\NoNullLiteralChecker;
 use Haspadar\PsalmEoRules\Tests\Constraint\PsalmAnalysisConstraint;
 use Haspadar\PsalmEoRules\Tests\PsalmRunner;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Haspadar\PsalmEoRules\Rules\NoNullLiteralChecker
- */
+#[CoversClass(NoNullLiteralChecker::class)]
 final class NoNullLiteralCheckerTest extends TestCase
 {
     private PsalmRunner $runner;

@@ -12,11 +12,13 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 final class StaticPropertyUsage implements WithoutMethods
 {
-    private readonly int $id;
+    /**
+     * @psalm-suppress NoStaticProperty
+     */
+    private static int $id = 0;
 
     public function __construct()
     {
-        $this->id = 0;
     }
 
     public function run(): void

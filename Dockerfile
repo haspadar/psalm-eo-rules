@@ -1,5 +1,8 @@
 FROM php:8.1-cli
 
+# --- Build arguments ---
+ARG INSTALL_XDEBUG=false
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -18,20 +21,27 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install intl zip opcache bcmath mbstring
 
-# Install Xdebug
-RUN pecl install xdebug
+# Install Xdebug (optional)
+RUN if [ "$INSTALL_XDEBUG" = "true" ]; then \
+      pecl install xdebug && \
+      docker-php-ext-enable xdebug; \
+    fi
+
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-# Install Composer (latest)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Install Composer
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 # Set timezone
 ENV TZ=UTC
 RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /app
-COPY . .
 
-RUN composer install --no-interaction --prefer-dist
+# Optimize layer caching
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --no-scripts --no-progress
+
+COPY . .
 
 ENTRYPOINT ["fish"]

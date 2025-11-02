@@ -21,7 +21,7 @@ jobs:
           coverage: xdebug
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
 
       - name: Validate composer.json
         run: composer validate
@@ -43,3 +43,9 @@ jobs:
 
       - name: Rector (dry-run)
         run: composer test-refactor
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: haspadar/psalm-eo-rules

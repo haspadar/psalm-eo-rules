@@ -29,6 +29,8 @@ final class Suppression
         }
 
         $text = $doc->getText();
-        return str_contains($text, '@psalm-suppress ' . $issueCode);
+        $pattern = '/@psalm-suppress\s+' . preg_quote($issueCode, '/') . '(?:\s|$)/';
+
+        return (bool) preg_match($pattern, $text);
     }
 }

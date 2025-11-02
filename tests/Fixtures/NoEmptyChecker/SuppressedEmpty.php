@@ -16,6 +16,6 @@ final class SuppressedEmpty implements WithoutMethods
     public function ok(): bool
     {
         $x = [];
-        return empty($x);
+        return $x === [];
     }
 }

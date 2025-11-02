@@ -13,7 +13,7 @@ use RuntimeException;
 
 final class ThrowingException implements WithoutMethods
 {
-    public function ok(): void
+    public function ok(): never
     {
         throw new RuntimeException('fail');
     }

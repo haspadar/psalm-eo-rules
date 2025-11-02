@@ -8,12 +8,15 @@ declare(strict_types=1);
 
 namespace Haspadar\PsalmEoRules\Tests\Rules;
 
+use Haspadar\PsalmEoRules\Rules\NoProtectedChecker;
 use Haspadar\PsalmEoRules\Tests\Constraint\PsalmAnalysisConstraint;
 use Haspadar\PsalmEoRules\Tests\PsalmRunner;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(NoProtectedChecker::class)]
 final class NoProtectedCheckerTest extends TestCase
 {
     private PsalmRunner $runner;

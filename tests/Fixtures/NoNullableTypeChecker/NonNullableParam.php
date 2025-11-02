@@ -12,7 +12,4 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 final class NonNullableParam implements WithoutMethods
 {
-    public function ok(string $name): void
-    {
-    }
 }

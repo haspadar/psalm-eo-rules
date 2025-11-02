@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Haspadar\PsalmEoRules\Rules;
 
 use Haspadar\PsalmEoRules\Rules\Issue\NoNullIssue;
+use Haspadar\PsalmEoRules\Suppression;
 use PhpParser\Node\Expr\ConstFetch;
 use Psalm\CodeLocation;
 use Psalm\IssueBuffer;
@@ -29,23 +30,20 @@ final class NoNullLiteralChecker implements AfterExpressionAnalysisInterface
     {
         $expr = $event->getExpr();
 
-        if (!$expr instanceof ConstFetch || strtolower($expr->name->toString()) !== 'null') {
+        if (
+            !$expr instanceof ConstFetch
+            || strtolower($expr->name->toString()) !== 'null'
+        ) {
             return null;
         }
 
-        // Psalm tracks suppression in StatementsSource, not AST
-        $source = $event->getStatementsSource();
-        $filePath = $source->getFilePath();
-        $suppressions = $source->getSuppressedIssues();
+        // Check suppression both in source and AST node (consistent with other checkers)
+        $sourceSuppressions = $event->getStatementsSource()->getSuppressedIssues();
+        $isSuppressed =
+            in_array(self::SUPPRESS, $sourceSuppressions, true)
+            || Suppression::has($expr, self::SUPPRESS);
 
-        // direct match (active suppressions in this file)
-        if (in_array(self::SUPPRESS, $suppressions, true)) {
-            return null;
-        }
-
-        // additional fallback: look for suppression in raw file text
-        $contents = file_get_contents($filePath);
-        if ($contents !== false && str_contains($contents, '@psalm-suppress ' . self::SUPPRESS)) {
+        if ($isSuppressed) {
             return null;
         }
 

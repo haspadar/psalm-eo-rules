@@ -12,9 +12,6 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 abstract class Base implements WithoutMethods
 {
-    public function __construct()
-    {
-    }
     public function run(): void
     {
     }
@@ -24,6 +21,5 @@ final class ParentCtor extends Base
 {
     public function __construct()
     {
-        parent::__construct();
     }
 }

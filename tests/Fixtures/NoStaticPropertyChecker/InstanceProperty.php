@@ -12,10 +12,4 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 final class InstanceProperty implements WithoutMethods
 {
-    private readonly int $id;
-
-    public function __construct()
-    {
-        $this->id = 1;
-    }
 }
