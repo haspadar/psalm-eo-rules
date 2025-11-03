@@ -18,34 +18,25 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
-          coverage: xdebug
+          coverage: none
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Validate composer.json
-        run: composer validate
+        run: composer validate --strict
 
       - name: Style check
         run: composer fix-test
 
-      - name: PHPStan
+      - name: Static analysis (PHPStan)
         run: composer analyze
 
-      - name: Psalm
+      - name: Static analysis (Psalm)
         run: composer psalm
 
-      - name: PHPUnit
+      - name: Tests
         run: composer test
-
-      - name: Coverage
-        run: composer test-coverage
 
       - name: Rector (dry-run)
         run: composer test-refactor
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: haspadar/psalm-eo-rules
