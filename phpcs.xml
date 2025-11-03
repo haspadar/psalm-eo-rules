@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="Psalm Eo Rules">
+    <description>Code style and structure rules for EO libraries</description>
+
+    <files>
+        <directory>src</directory>
+    </files>
+
+    <rule ref="PSR12"/>
+
+</ruleset>

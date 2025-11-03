@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Style check
+        run: composer fix-test
+
+      - name: PHPStan
+        run: composer analyze
+
+      - name: Psalm
+        run: composer psalm
+
+      - name: PHPUnit
+        run: composer test
+
+      - name: Coverage
+        run: composer test-coverage
+
+      - name: Rector (dry-run)
+        run: composer test-refactor
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: haspadar/psalm-eo-rules

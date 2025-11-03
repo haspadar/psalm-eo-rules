@@ -1,0 +1,20 @@
+<?php
+
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2025 Kanstantsin Mesnik
+ * SPDX-License-Identifier: MIT
+ */
+declare(strict_types=1);
+
+namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoIssetChecker;
+
+use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
+
+final class NoIsset implements WithoutMethods
+{
+    public function ok(): bool
+    {
+        $a = 1;
+        return $a > 0;
+    }
+}
