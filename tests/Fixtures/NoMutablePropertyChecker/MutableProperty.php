@@ -12,5 +12,10 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 final class MutableProperty implements WithoutMethods
 {
-    public int $id = 1;
+    public int $id;
+
+    public function __construct()
+    {
+        $this->id = 1;
+    }
 }

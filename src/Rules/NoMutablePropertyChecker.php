@@ -51,8 +51,8 @@ final class NoMutablePropertyChecker implements AfterClassLikeVisitInterface
             IssueBuffer::accepts(
                 new NoMutablePropertyIssue(
                     'Properties must be declared readonly.',
-                    new CodeLocation($event->getStatementsSource(), $stmt)
-                )
+                    new CodeLocation($event->getStatementsSource(), $stmt),
+                ),
             );
         }
 
@@ -80,8 +80,8 @@ final class NoMutablePropertyChecker implements AfterClassLikeVisitInterface
                 IssueBuffer::accepts(
                     new NoMutablePropertyIssue(
                         'Properties must be declared readonly.',
-                        new CodeLocation($event->getStatementsSource(), $param)
-                    )
+                        new CodeLocation($event->getStatementsSource(), $param),
+                    ),
                 );
             }
         }

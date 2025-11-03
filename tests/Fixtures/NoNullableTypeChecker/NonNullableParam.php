@@ -12,4 +12,7 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
 final class NonNullableParam implements WithoutMethods
 {
+    public function process(string $value): void
+    {
+    }
 }
