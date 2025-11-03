@@ -46,8 +46,7 @@ final class NoStaticPropertyChecker implements AfterStatementAnalysisInterface, 
             new NoStaticPropertyIssue(
                 'Static property declarations violate EO rules.',
                 new CodeLocation($event->getStatementsSource(), $stmt)
-            ),
-            $suppressed
+            )
         );
 
         return null;
