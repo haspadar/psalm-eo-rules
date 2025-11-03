@@ -36,6 +36,7 @@ final class NoEmptyChecker implements AfterExpressionAnalysisInterface
      *
      * @param AfterExpressionAnalysisEvent $event Psalm event containing analyzed expression
      */
+    #[\Override]
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
         $expr = $event->getExpr();

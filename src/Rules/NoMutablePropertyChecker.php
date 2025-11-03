@@ -27,6 +27,7 @@ final class NoMutablePropertyChecker implements AfterClassLikeVisitInterface
 {
     private const SUPPRESS = 'NoMutableProperty';
 
+    #[\Override]
     public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
     {
         $class = $event->getStmt();

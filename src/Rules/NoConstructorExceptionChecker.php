@@ -8,15 +8,13 @@ declare(strict_types=1);
 
 namespace Haspadar\PsalmEoRules\Rules;
 
-use Haspadar\PsalmEoRules\Rules\Issue\NoConstructorExceptionIssue;
+use Haspadar\PsalmEoRules\Rules\Issue\NoConstructorException;
 use Haspadar\PsalmEoRules\Suppression;
-use PhpParser\Node;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Expr\Throw_;
 use Psalm\CodeLocation;
 use Psalm\IssueBuffer;
-use Psalm\Plugin\EventHandler\AfterClassLikeVisitInterface;
-use Psalm\Plugin\EventHandler\Event\AfterClassLikeVisitEvent;
+use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
+use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 
 /**
  * Detects `throw` expressions inside class constructors.
@@ -24,75 +22,45 @@ use Psalm\Plugin\EventHandler\Event\AfterClassLikeVisitEvent;
  * EO rule: constructors must not throw exceptions.
  * Use factories or validation objects for error handling instead.
  */
-final class NoConstructorExceptionChecker implements AfterClassLikeVisitInterface
+final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInterface
 {
     private const SUPPRESS = 'NoConstructorException';
 
-    public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
+    #[\Override]
+    public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
-        $class = $event->getStmt();
-        if (!$class instanceof Class_) {
-            return;
+        $expr = $event->getExpr();
+
+        // Обрабатываем только выражения throw
+        if (!$expr instanceof Throw_) {
+            return null;
         }
 
-        // skip entire class if suppression exists
-        if (Suppression::has($class, self::SUPPRESS)) {
-            return;
+        // Определяем, что мы находимся внутри конструктора
+        $context   = $event->getContext();
+        $method_id = $context->calling_method_id;
+        if ($method_id === null || !str_ends_with($method_id, '::__construct')) {
+            return null;
         }
 
-        foreach ($class->stmts as $stmt) {
-            if (!$stmt instanceof Node\Stmt\ClassMethod) {
-                continue;
-            }
+        // Проверка подавления (через аннотацию @psalm-suppress)
+        $sourceSuppressions = $event->getStatementsSource()->getSuppressedIssues();
+        $isSuppressed =
+            in_array(self::SUPPRESS, $sourceSuppressions, true)
+            || Suppression::has($expr, self::SUPPRESS);
 
-            if (strtolower($stmt->name->toString()) !== '__construct') {
-                continue;
-            }
-
-            // skip constructor if suppressed
-            if (Suppression::has($stmt, self::SUPPRESS)) {
-                continue;
-            }
-
-            foreach ($stmt->stmts ?? [] as $subStmt) {
-                self::inspect($subStmt, $event, false);
-            }
-        }
-    }
-
-    /**
-     * Recursively inspects AST nodes for `throw` expressions inside constructors.
-     */
-    private static function inspect(Node $node, AfterClassLikeVisitEvent $event, bool $parentSuppressed): void
-    {
-        $suppressed = $parentSuppressed || Suppression::has($node, self::SUPPRESS);
-
-        if ($suppressed) {
-            return;
+        if ($isSuppressed) {
+            return null;
         }
 
-        if ($node instanceof Throw_) {
-            IssueBuffer::accepts(
-                new NoConstructorExceptionIssue(
-                    'Throwing exceptions inside constructors violates EO rules. '
-                    . 'Use a factory or validation object instead.',
-                    new CodeLocation($event->getStatementsSource(), $node)
-                )
-            );
-        }
+        IssueBuffer::accepts(
+            new NoConstructorException(
+                'Throwing exceptions inside constructors violates EO rules. '
+                . 'Use a factory or validation object instead.',
+                new CodeLocation($event->getStatementsSource(), $expr)
+            )
+        );
 
-        foreach ($node->getSubNodeNames() as $name) {
-            $child = $node->$name ?? null;
-
-            if ($child instanceof Node) {
-                self::inspect($child, $event, $suppressed);
-            } elseif (is_array($child)) {
-                foreach ($child as $sub) {
-                    if ($sub instanceof Node) {
-                        self::inspect($sub, $event, $suppressed);
-                    }
-                }
-            }
-        }
+        return null;
     }
 }

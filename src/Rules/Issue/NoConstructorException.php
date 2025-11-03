@@ -13,6 +13,6 @@ use Psalm\Issue\CodeIssue;
 /**
  * Reported when an exception is thrown inside a constructor.
  */
-final class NoConstructorExceptionIssue extends CodeIssue
+final class NoConstructorException extends CodeIssue
 {
 }

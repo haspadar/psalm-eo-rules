@@ -27,63 +27,62 @@ use Psalm\Plugin\EventHandler\Event\AfterStatementAnalysisEvent;
  */
 final class NoStaticPropertyChecker implements AfterStatementAnalysisInterface, AfterExpressionAnalysisInterface
 {
-    /**
-     * Suppression code name used in `@psalm-suppress`.
-     *
-     * @var string
-     */
     private const SUPPRESS = 'NoStaticProperty';
 
-    /**
-     * Reports an issue when a static property is declared and not suppressed.
-     *
-     * @param AfterStatementAnalysisEvent $event Psalm event containing the analyzed statement
-     * @return bool|null Always returns null as required by Psalm hook contract
-     */
+    #[\Override]
     public static function afterStatementAnalysis(AfterStatementAnalysisEvent $event): ?bool
     {
         $stmt = $event->getStmt();
-
-        $violation =
-            $stmt instanceof Property
-            && $stmt->isStatic()
-            && !Suppression::has($stmt, self::SUPPRESS);
-
-        if ($violation) {
-            IssueBuffer::accepts(
-                new NoStaticPropertyIssue(
-                    'Static property declarations violate EO rules.',
-                    new CodeLocation($event->getStatementsSource(), $stmt)
-                )
-            );
+        if (!$stmt instanceof Property || !$stmt->isStatic()) {
+            return null;
         }
+
+        $suppressed = $event->getStatementsSource()->getSuppressedIssues();
+        if (self::isSuppressed($suppressed) || Suppression::has($stmt, self::SUPPRESS)) {
+            return null;
+        }
+
+        IssueBuffer::accepts(
+            new NoStaticPropertyIssue(
+                'Static property declarations violate EO rules.',
+                new CodeLocation($event->getStatementsSource(), $stmt)
+            )
+        );
+
+        return null;
+    }
+
+    #[\Override]
+    public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
+    {
+        $expr = $event->getExpr();
+        if (!$expr instanceof StaticPropertyFetch) {
+            return null;
+        }
+
+        $suppressed = $event->getStatementsSource()->getSuppressedIssues();
+        if (self::isSuppressed($suppressed) || Suppression::has($expr, self::SUPPRESS)) {
+            return null;
+        }
+
+        IssueBuffer::accepts(
+            new NoStaticPropertyIssue(
+                'Static property usage violates EO rules.',
+                new CodeLocation($event->getStatementsSource(), $expr)
+            ),
+            $suppressed
+        );
 
         return null;
     }
 
     /**
-     * Reports an issue when a static property is accessed and not suppressed.
-     *
-     * @param AfterExpressionAnalysisEvent $event Psalm event containing analyzed expression
-     * @return bool|null Always returns null as required by Psalm hook contract
+     * @param list<string> $suppressed
      */
-    public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
+    private static function isSuppressed(array $suppressed): bool
     {
-        $expr = $event->getExpr();
-
-        $violation =
-            $expr instanceof StaticPropertyFetch
-            && !Suppression::has($expr, self::SUPPRESS);
-
-        if ($violation) {
-            IssueBuffer::accepts(
-                new NoStaticPropertyIssue(
-                    'Static property usage violates EO rules.',
-                    new CodeLocation($event->getStatementsSource(), $expr)
-                )
-            );
-        }
-
-        return null;
+        return in_array(self::SUPPRESS, $suppressed, true)
+            || in_array(NoStaticPropertyIssue::class, $suppressed, true)
+            || in_array('NoStaticPropertyIssue', $suppressed, true);
     }
 }

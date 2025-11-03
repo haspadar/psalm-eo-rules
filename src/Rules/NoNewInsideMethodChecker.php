@@ -46,6 +46,7 @@ final class NoNewInsideMethodChecker implements AfterClassLikeVisitInterface
      *
      * @param AfterClassLikeVisitEvent $event Psalm event containing class node and source
      */
+    #[\Override]
     public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
     {
         $class = $event->getStmt();

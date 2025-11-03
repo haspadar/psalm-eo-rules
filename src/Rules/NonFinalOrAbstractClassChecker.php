@@ -37,6 +37,7 @@ final class NonFinalOrAbstractClassChecker implements AfterClassLikeVisitInterfa
      *
      * @param AfterClassLikeVisitEvent $event Psalm event containing class node and source
      */
+    #[\Override]
     public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
     {
         $node = $event->getStmt();
