@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Haspadar\PsalmEoRules\Rules;
 
 use Haspadar\PsalmEoRules\Rules\Issue\NoStaticPropertyIssue;
+use Haspadar\PsalmEoRules\Suppression;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Property;
 use Psalm\CodeLocation;
@@ -37,11 +38,7 @@ final class NoStaticPropertyChecker implements AfterStatementAnalysisInterface, 
         }
 
         $suppressed = $event->getStatementsSource()->getSuppressedIssues();
-        $isSuppressed = in_array(self::SUPPRESS, $suppressed, true)
-            || in_array(NoStaticPropertyIssue::class, $suppressed, true)
-            || in_array('NoStaticPropertyIssue', $suppressed, true);
-
-        if ($isSuppressed) {
+        if (self::isSuppressed($suppressed) || Suppression::has($stmt, self::SUPPRESS)) {
             return null;
         }
 
@@ -65,11 +62,7 @@ final class NoStaticPropertyChecker implements AfterStatementAnalysisInterface, 
         }
 
         $suppressed = $event->getStatementsSource()->getSuppressedIssues();
-        $isSuppressed = in_array(self::SUPPRESS, $suppressed, true)
-            || in_array(NoStaticPropertyIssue::class, $suppressed, true)
-            || in_array('NoStaticPropertyIssue', $suppressed, true);
-
-        if ($isSuppressed) {
+        if (self::isSuppressed($suppressed) || Suppression::has($expr, self::SUPPRESS)) {
             return null;
         }
 
@@ -82,5 +75,15 @@ final class NoStaticPropertyChecker implements AfterStatementAnalysisInterface, 
         );
 
         return null;
+    }
+
+    /**
+     * @param list<string> $suppressed
+     */
+    private static function isSuppressed(array $suppressed): bool
+    {
+        return in_array(self::SUPPRESS, $suppressed, true)
+            || in_array(NoStaticPropertyIssue::class, $suppressed, true)
+            || in_array('NoStaticPropertyIssue', $suppressed, true);
     }
 }
