@@ -50,6 +50,7 @@ final class Plugin implements PluginEntryPointInterface
      * @param RegistrationInterface $registration Psalm plugin registration object
      * @param SimpleXMLElement|null $config       Optional plugin configuration
      */
+    #[\Override]
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
     {
         $autoload = __DIR__ . '/../vendor/autoload.php';

@@ -34,13 +34,14 @@ final class NoNullableTypeChecker implements AfterCodebasePopulatedInterface
      *
      * @param AfterCodebasePopulatedEvent $event Psalm event providing codebase context
      */
+    #[\Override]
     public static function afterCodebasePopulated(AfterCodebasePopulatedEvent $event): void
     {
         $codebase = $event->getCodebase();
         $classProvider = $codebase->classlike_storage_provider;
 
         /** @psalm-suppress InternalClass, InternalMethod */
-        foreach ($classProvider->getAll() as $class) {
+        foreach ($classProvider::getAll() as $class) {
             $classSuppressed = in_array(self::SUPPRESS, $class->suppressed_issues, true);
 
             foreach ($class->methods as $method) {

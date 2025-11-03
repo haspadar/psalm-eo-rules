@@ -30,6 +30,7 @@ final class NoStaticMethodDeclarationChecker implements AfterFunctionLikeAnalysi
      * @param AfterFunctionLikeAnalysisEvent $event Psalm event containing method storage
      * @return bool|null Always returns null as required by Psalm hook contract
      */
+    #[\Override]
     public static function afterStatementAnalysis(AfterFunctionLikeAnalysisEvent $event): ?bool
     {
         $storage = $event->getFunctionLikeStorage();

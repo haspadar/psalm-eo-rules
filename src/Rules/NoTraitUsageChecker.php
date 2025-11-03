@@ -34,12 +34,13 @@ final class NoTraitUsageChecker implements AfterCodebasePopulatedInterface
      *
      * @param AfterCodebasePopulatedEvent $event Psalm event containing the analyzed codebase
      */
+    #[\Override]
     public static function afterCodebasePopulated(AfterCodebasePopulatedEvent $event): void
     {
         $provider = $event->getCodebase()->classlike_storage_provider;
 
         /** @psalm-suppress InternalClass, InternalMethod */
-        foreach ($provider->getAll() as $class) {
+        foreach ($provider::getAll() as $class) {
             foreach ($class->used_traits as $trait => $_) {
                 $loc = $class->location;
 

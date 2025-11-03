@@ -37,6 +37,7 @@ final class NoIssetChecker implements AfterExpressionAnalysisInterface
      * @param AfterExpressionAnalysisEvent $event Psalm event containing analyzed expression
      * @return bool|null Always returns null as required by Psalm hook contract
      */
+    #[\Override]
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
         $expr = $event->getExpr();

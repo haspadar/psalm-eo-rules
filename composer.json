@@ -11,7 +11,7 @@
     "roave/security-advisories": "dev-latest",
     "phpstan/phpstan": "^1.11",
     "nunomaduro/collision": "^7.10",
-    "vimeo/psalm": "^5.25",
+    "vimeo/psalm": "^6.0",
     "rector/rector": "^1.2",
     "friendsofphp/php-cs-fixer": "^3",
     "phpunit/phpunit": "^10.5"
@@ -58,7 +58,7 @@
   },
   "config": {
     "platform": {
-      "php": "8.1.0"
+      "php": "8.1.33"
     },
     "allow-plugins": {
       "infection/extension-installer": true

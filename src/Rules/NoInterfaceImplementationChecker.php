@@ -27,6 +27,7 @@ final class NoInterfaceImplementationChecker implements AfterClassLikeVisitInter
 {
     private const SUPPRESS = 'NoInterfaceImplementation';
 
+    #[\Override]
     public static function afterClassLikeVisit(AfterClassLikeVisitEvent $event): void
     {
         $node = $event->getStmt();

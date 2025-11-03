@@ -26,6 +26,7 @@ final class NoNullLiteralChecker implements AfterExpressionAnalysisInterface
 {
     private const SUPPRESS = 'NoNullLiteral';
 
+    #[\Override]
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
         $expr = $event->getExpr();
