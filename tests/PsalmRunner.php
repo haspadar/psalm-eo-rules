@@ -7,10 +7,10 @@ namespace Haspadar\PsalmEoRules\Tests;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
-final class PsalmRunner
+final readonly class PsalmRunner
 {
     public function __construct(
-        private readonly string $binary = 'vendor/bin/psalm',
+        private string $binary = 'vendor/bin/psalm',
     ) {
     }
 

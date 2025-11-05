@@ -10,6 +10,7 @@ namespace Haspadar\PsalmEoRules\Rules;
 
 use Haspadar\PsalmEoRules\Rules\Issue\NoMutablePropertyIssue;
 use Haspadar\PsalmEoRules\Suppression;
+use PhpParser\Modifiers;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -35,6 +36,11 @@ final class NoMutablePropertyChecker implements AfterClassLikeVisitInterface
             return;
         }
 
+        // Skip if the entire class is readonly (PHP ≥ 8.2)
+        if (($class->flags & Modifiers::READONLY) !== 0) {
+            return;
+        }
+
         // Regular properties
         foreach ($class->stmts as $stmt) {
             if (!$stmt instanceof Property) {
@@ -52,25 +58,24 @@ final class NoMutablePropertyChecker implements AfterClassLikeVisitInterface
             IssueBuffer::accepts(
                 new NoMutablePropertyIssue(
                     'Properties must be declared readonly.',
-                    new CodeLocation($event->getStatementsSource(), $stmt),
-                ),
+                    new CodeLocation($event->getStatementsSource(), $stmt)
+                )
             );
         }
 
-        // Promoted properties in constructors
+        // Promoted properties inside constructors
         foreach ($class->stmts as $stmt) {
             if (!$stmt instanceof ClassMethod) {
                 continue;
             }
 
             foreach ($stmt->params as $param) {
-                if (
-                    ($param->flags & (Class_::MODIFIER_PUBLIC | Class_::MODIFIER_PROTECTED | Class_::MODIFIER_PRIVATE)) === 0
-                ) {
+                // Only check promoted parameters (those with visibility)
+                if (($param->flags & Modifiers::VISIBILITY_MASK) === 0) {
                     continue;
                 }
 
-                if (($param->flags & Class_::MODIFIER_READONLY) !== 0) {
+                if (($param->flags & Modifiers::READONLY) !== 0) {
                     continue;
                 }
 
@@ -81,8 +86,8 @@ final class NoMutablePropertyChecker implements AfterClassLikeVisitInterface
                 IssueBuffer::accepts(
                     new NoMutablePropertyIssue(
                         'Properties must be declared readonly.',
-                        new CodeLocation($event->getStatementsSource(), $param),
-                    ),
+                        new CodeLocation($event->getStatementsSource(), $param)
+                    )
                 );
             }
         }
