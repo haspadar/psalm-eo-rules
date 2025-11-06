@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0] – 2025-11-06
+### Changed
+- Bumped PHP requirement to **8.2+**
+- Switched Dockerfile base image to `php:8.2-cli`
+- Updated Rector and other dev tools for PHP 8.2 compatibility
+- `NoMutablePropertyChecker` now respects `readonly` classes
+
+### Removed
+- `NoNewInsideMethodChecker` rule and its tests
+- README entry and documentation references to the removed rule
+
+### Fixed
+- False positives on immutable (`readonly`) classes in property mutability checks
+
+### Internal
+- Modernized CI configuration
+- Aligned Psalm, PHPStan, Rector, and PHPUnit versions
+
 ## [0.2.0] – 2025-11-03
 ### Added
 - Support for **Psalm 6.x** API (updated interfaces and event handlers)
