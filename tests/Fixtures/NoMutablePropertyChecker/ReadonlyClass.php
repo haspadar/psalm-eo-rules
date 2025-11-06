@@ -6,7 +6,6 @@ namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoMutablePropertyChecker;
 
 use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
-/** readonly */
 final readonly class ReadonlyClass implements WithoutMethods
 {
     private int $a;
