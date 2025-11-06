@@ -54,7 +54,6 @@ Requirements: PHP 8.1+ and Psalm 5.25 or newer.
 | `NoInterfaceImplementation` | Concrete class that does not implement any interface                                                    | Keeps polymorphism explicit and substitution possible                                  |
 | `NoTraitUsage`              | Using traits in a class                                                                                 | Traits blur object boundaries; prefer composition or delegation                        |
 | `NoConstructorException`    | `throw` statements inside a constructor                                                                 | Constructors must not fail; delegate validation to factories                           |
-| `NoNewInsideMethod`         | `new` inside methods/constructors (allowed: exceptions, parent constructor calls, local temps, returns) | Object creation belongs to dedicated factories                                         |
 | `NoProtected`               | Protected methods or properties                                                                         | Without subclassing there is no need for protected members                             |
 
 ---
