@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0] – 2025-11-06
+### Added
+- Unified `NoNullChecker` rule combining literal and argument detection
+- Handles `return null`, `$x = null`, and `null` passed into user-defined functions or methods
+- Internal PHP functions and methods (e.g. `mb_substr`, `strpos`) are now ignored
+
+### Changed
+- Replaced legacy `NoNullLiteralChecker` with `NoNullChecker`
+- Updated tests and fixtures to match new rule naming
+- Adjusted plugin registration and README documentation
+
+### Fixed
+- False positives for `null` arguments in internal PHP functions
+
 ## [0.3.0] – 2025-11-06
 ### Changed
 - Bumped PHP requirement to **8.2+**
