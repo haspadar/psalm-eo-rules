@@ -6,14 +6,14 @@
  */
 declare(strict_types=1);
 
-namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoNullLiteralChecker;
+namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoNullChecker;
 
 use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
-final class WithNull implements WithoutMethods
+final class WithoutNull implements WithoutMethods
 {
     public function val(): mixed
     {
-        return null;
+        return 42;
     }
 }

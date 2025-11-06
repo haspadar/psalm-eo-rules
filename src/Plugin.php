@@ -29,7 +29,7 @@ final class Plugin implements PluginEntryPointInterface
      * @var list<class-string>
      */
     private const RULES = [
-        Rules\NoNullLiteralChecker::class,
+        Rules\NoNullChecker::class,
         Rules\NoNullableTypeChecker::class,
         Rules\NoIssetChecker::class,
         Rules\NoEmptyChecker::class,

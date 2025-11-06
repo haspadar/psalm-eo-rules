@@ -8,7 +8,8 @@
 ## 📦 About
 
 **Psalm EO Rules** is a [Psalm](https://psalm.dev) plugin that codifies the principles from
-[Elegant Objects](https://www.yegor256.com/elegant-objects.html). Every rule enforces immutability, explicit composition, and clear ownership.
+[Elegant Objects](https://www.yegor256.com/elegant-objects.html). Every rule enforces immutability, explicit
+composition, and clear ownership.
 
 The plugin focuses on eliminating hidden shared state, encouraging immutable objects, and making composition and
 contracts explicit.
@@ -41,20 +42,20 @@ Requirements: PHP 8.1+ and Psalm 5.25 or newer.
 
 ## 🧭 Rules
 
-| Issue code                  | Trigger                                                                                                 | EO rationale                                                                           |
-|-----------------------------|---------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| `NoStaticMethodDeclaration` | Declaring a `static function`                                                                           | Static helpers break encapsulation and make behaviour context dependent                |
-| `NoStaticProperty`          | Declaring or reading a static property                                                                  | Shared state hides dependencies and produces hidden coupling                           |
-| `NoMutableProperty`         | Property declared without the `readonly` flag                                                           | Objects should be immutable after construction                                         |
-| `NoNullableType`            | Parameter typed as `?Type`                                                                              | Optional behaviour should be modelled explicitly (Optional, Null Object, Either, etc.) |
-| `NoNullLiteral`             | Using the `null` literal in expressions                                                                 | `null` signals absence and erodes the object contract                                  |
-| `NoIsset`                   | Calling `isset()`                                                                                       | Weakens type guarantees; be explicit about the expected shape                          |
-| `NoEmpty`                   | Calling `empty()`                                                                                       | Masks intent and hides the data contract of an object                                  |
-| `NonFinalOrAbstractClass`   | Class that is neither `final` nor `abstract`                                                            | Every class should either be closed for inheritance or clearly designed for extension  |
-| `NoInterfaceImplementation` | Concrete class that does not implement any interface                                                    | Keeps polymorphism explicit and substitution possible                                  |
-| `NoTraitUsage`              | Using traits in a class                                                                                 | Traits blur object boundaries; prefer composition or delegation                        |
-| `NoConstructorException`    | `throw` statements inside a constructor                                                                 | Constructors must not fail; delegate validation to factories                           |
-| `NoProtected`               | Protected methods or properties                                                                         | Without subclassing there is no need for protected members                             |
+| Issue code                  | Trigger                                                               | EO rationale                                                                                      |
+|-----------------------------|-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| `NoStaticMethodDeclaration` | Declaring a `static function`                                         | Static helpers break encapsulation and make behaviour context dependent                           |
+| `NoStaticProperty`          | Declaring or reading a static property                                | Shared state hides dependencies and produces hidden coupling                                      |
+| `NoMutableProperty`         | Property declared without the `readonly` flag                         | Objects should be immutable after construction                                                    |
+| `NoNullableType`            | Parameter typed as `?Type`                                            | Optional behaviour should be modelled explicitly (Optional, Null Object, Either, etc.)            |
+| `NoNull`                    | Using `null` in returns, assignments, or as function/method arguments | `null` represents absence and breaks object integrity. Prefer explicit `Optional` or `NullObject` |
+| `NoIsset`                   | Calling `isset()`                                                     | Weakens type guarantees; be explicit about the expected shape                                     |
+| `NoEmpty`                   | Calling `empty()`                                                     | Masks intent and hides the data contract of an object                                             |
+| `NonFinalOrAbstractClass`   | Class that is neither `final` nor `abstract`                          | Every class should either be closed for inheritance or clearly designed for extension             |
+| `NoInterfaceImplementation` | Concrete class that does not implement any interface                  | Keeps polymorphism explicit and substitution possible                                             |
+| `NoTraitUsage`              | Using traits in a class                                               | Traits blur object boundaries; prefer composition or delegation                                   |
+| `NoConstructorException`    | `throw` statements inside a constructor                               | Constructors must not fail; delegate validation to factories                                      |
+| `NoProtected`               | Protected methods or properties                                       | Without subclassing there is no need for protected members                                        |
 
 ---
 
