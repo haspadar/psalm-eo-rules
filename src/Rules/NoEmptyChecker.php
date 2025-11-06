@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Haspadar\PsalmEoRules\Rules;
 
 use Haspadar\PsalmEoRules\Rules\Issue\NoEmptyIssue;
-use Haspadar\PsalmEoRules\Suppression;
 use PhpParser\Node\Expr\Empty_;
 use Psalm\CodeLocation;
 use Psalm\IssueBuffer;
