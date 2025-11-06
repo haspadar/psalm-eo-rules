@@ -40,7 +40,6 @@ final class Plugin implements PluginEntryPointInterface
         Rules\NoInterfaceImplementationChecker::class,
         Rules\NoTraitUsageChecker::class,
         Rules\NoConstructorExceptionChecker::class,
-        Rules\NoNewInsideMethodChecker::class,
         Rules\NoProtectedChecker::class,
     ];
 

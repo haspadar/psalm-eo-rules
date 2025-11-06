@@ -12,7 +12,7 @@ return static function (RectorConfig $config): void {
     ]);
 
     $config->sets([
-        SetList::PHP_81,
+        SetList::PHP_82,
         SetList::CODE_QUALITY,
         SetList::DEAD_CODE,
         SetList::TYPE_DECLARATION,

@@ -49,4 +49,12 @@ final class NoMutablePropertyCheckerTest extends TestCase
         $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoMutablePropertyChecker/SuppressedMutableProperty.php');
         self::assertThat($result, new PsalmAnalysisConstraint(false));
     }
+
+    #[Test]
+    #[TestDox('Ignores properties in readonly classes')]
+    public function ignoresReadonlyClassProperties(): void
+    {
+        $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoMutablePropertyChecker/ReadonlyClass.php');
+        self::assertThat($result, new PsalmAnalysisConstraint(false));
+    }
 }
