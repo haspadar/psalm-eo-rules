@@ -1,6 +1,6 @@
 # Psalm EO Rules
 
-[![PHP Version](https://img.shields.io/badge/PHP-8.1-blue)](https://www.php.net/releases/8.1/)
+[![PHP Version](https://img.shields.io/badge/PHP-8.2-blue)](https://www.php.net/releases/8.2/)
 [![CI](https://github.com/haspadar/psalm-eo-rules/actions/workflows/ci.yml/badge.svg)](https://github.com/haspadar/psalm-eo-rules/actions/workflows/ci.yml)
 
 ---
