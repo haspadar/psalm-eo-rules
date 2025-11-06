@@ -15,13 +15,13 @@ use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
  */
 function demo(string $str): string
 {
-    return substr($str, 1, null, 'UTF-8');
+    return mb_substr($str, 1, null, 'UTF-8');
 }
 
 final class WithInternalFunction implements WithoutMethods
 {
-    public function process(string $str): int
+    public function process(string $str): int|false
     {
-        return mb_strpos($str, null, 1, null);
+        return mb_strpos($str, 'e', 1, null);
     }
 }

@@ -57,4 +57,28 @@ final class NoNullCheckerTest extends TestCase
         $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoNullChecker/WithoutNull.php');
         self::assertThat($result, new PsalmAnalysisConstraint(false));
     }
+
+    #[Test]
+    #[TestDox('Reports error when null is returned from a method')]
+    public function reportsErrorOnNullReturn(): void
+    {
+        $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoNullChecker/WithNullReturn.php');
+        self::assertThat($result, new PsalmAnalysisConstraint(true));
+    }
+
+    #[Test]
+    #[TestDox('Reports error when null is assigned to a variable')]
+    public function reportsErrorOnNullAssignment(): void
+    {
+        $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoNullChecker/WithNullAssignment.php');
+        self::assertThat($result, new PsalmAnalysisConstraint(true));
+    }
+
+    #[Test]
+    #[TestDox('Reports error when null is passed as a function argument')]
+    public function reportsErrorOnNullArgument(): void
+    {
+        $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoNullChecker/WithNullArgument.php');
+        self::assertThat($result, new PsalmAnalysisConstraint(true));
+    }
 }
