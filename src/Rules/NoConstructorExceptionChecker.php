@@ -8,20 +8,14 @@ declare(strict_types=1);
 
 namespace Haspadar\PsalmEoRules\Rules;
 
+use PhpParser\Node\Expr\Throw_;
 use Haspadar\PsalmEoRules\Rules\Issue\NoConstructorException;
 use Haspadar\PsalmEoRules\Suppression;
-use PhpParser\Node\Expr\Throw_;
 use Psalm\CodeLocation;
 use Psalm\IssueBuffer;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 
-/**
- * Detects `throw` expressions inside class constructors.
- *
- * EO rule: constructors must not throw exceptions.
- * Use factories or validation objects for error handling instead.
- */
 final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInterface
 {
     private const SUPPRESS = 'NoConstructorException';
@@ -31,25 +25,19 @@ final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInte
     {
         $expr = $event->getExpr();
 
-        // Обрабатываем только выражения throw
         if (!$expr instanceof Throw_) {
             return null;
         }
 
-        // Определяем, что мы находимся внутри конструктора
-        $context   = $event->getContext();
-        $method_id = $context->calling_method_id;
-        if ($method_id === null || !str_ends_with($method_id, '::__construct')) {
+        if (!self::isInConstructor($event)) {
             return null;
         }
 
-        // Проверка подавления (через аннотацию @psalm-suppress)
-        $sourceSuppressions = $event->getStatementsSource()->getSuppressedIssues();
-        $isSuppressed =
-            in_array(self::SUPPRESS, $sourceSuppressions, true)
-            || Suppression::has($expr, self::SUPPRESS);
+        if (self::isSuppressed($event, $expr)) {
+            return null;
+        }
 
-        if ($isSuppressed) {
+        if (self::isInsideClosure($event, $expr)) {
             return null;
         }
 
@@ -62,5 +50,30 @@ final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInte
         );
 
         return null;
+    }
+
+    private static function isInConstructor(AfterExpressionAnalysisEvent $event): bool
+    {
+        $methodId = $event->getContext()->calling_method_id;
+        return $methodId !== null && str_ends_with($methodId, '::__construct');
+    }
+
+    private static function isSuppressed(AfterExpressionAnalysisEvent $event, Throw_ $expr): bool
+    {
+        $sourceSuppressions = $event->getStatementsSource()->getSuppressedIssues();
+        return in_array(self::SUPPRESS, $sourceSuppressions, true)
+            || Suppression::has($expr, self::SUPPRESS);
+    }
+
+    private static function isInsideClosure(AfterExpressionAnalysisEvent $event, Throw_ $expr): bool
+    {
+        $filePath = $event->getStatementsSource()->getFilePath();
+        $code = @file_get_contents($filePath);
+        if ($code === false) {
+            return false;
+        }
+
+        $before = substr($code, max(0, $expr->getStartFilePos() - 50), 50);
+        return preg_match('/fn\s*\(|function\s*\(/', $before) === 1;
     }
 }

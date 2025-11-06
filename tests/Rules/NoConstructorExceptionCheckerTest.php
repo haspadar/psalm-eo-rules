@@ -57,4 +57,12 @@ final class NoConstructorExceptionCheckerTest extends TestCase
         $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoConstructorExceptionChecker/SuppressedThrow.php');
         self::assertThat($result, new PsalmAnalysisConstraint(false));
     }
+
+    #[Test]
+    #[TestDox('Ignores throw inside a closure within constructor')]
+    public function throwInsideClosureIsIgnored(): void
+    {
+        $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoConstructorExceptionChecker/ClosureThrow.php');
+        self::assertThat($result, new PsalmAnalysisConstraint(false));
+    }
 }
