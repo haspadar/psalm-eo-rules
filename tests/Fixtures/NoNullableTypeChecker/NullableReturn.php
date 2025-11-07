@@ -6,15 +6,14 @@
  */
 declare(strict_types=1);
 
-namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoIssetChecker;
+namespace Haspadar\PsalmEoRules\Tests\Fixtures\NoNullableTypeChecker;
 
 use Haspadar\PsalmEoRules\Tests\Fixtures\WithoutMethods;
 
-final class NoIsset implements WithoutMethods
+final class NullableReturn implements WithoutMethods
 {
-    public function ok(): bool
+    public function demo(): ?string
     {
-        $a = 1;
-        return $a > 0;
+        return '';
     }
 }

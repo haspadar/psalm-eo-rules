@@ -31,8 +31,6 @@ final class Plugin implements PluginEntryPointInterface
     private const RULES = [
         Rules\NoNullChecker::class,
         Rules\NoNullableTypeChecker::class,
-        Rules\NoIssetChecker::class,
-        Rules\NoEmptyChecker::class,
         Rules\NoStaticMethodDeclarationChecker::class,
         Rules\NoStaticPropertyChecker::class,
         Rules\NoMutablePropertyChecker::class,

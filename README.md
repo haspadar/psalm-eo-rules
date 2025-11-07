@@ -49,8 +49,6 @@ Requirements: PHP 8.1+ and Psalm 5.25 or newer.
 | `NoMutableProperty`         | Property declared without the `readonly` flag                         | Objects should be immutable after construction                                                    |
 | `NoNullableType`            | Parameter typed as `?Type`                                            | Optional behaviour should be modelled explicitly (Optional, Null Object, Either, etc.)            |
 | `NoNull`                    | Using `null` in returns, assignments, or as function/method arguments | `null` represents absence and breaks object integrity. Prefer explicit `Optional` or `NullObject` |
-| `NoIsset`                   | Calling `isset()`                                                     | Weakens type guarantees; be explicit about the expected shape                                     |
-| `NoEmpty`                   | Calling `empty()`                                                     | Masks intent and hides the data contract of an object                                             |
 | `NonFinalOrAbstractClass`   | Class that is neither `final` nor `abstract`                          | Every class should either be closed for inheritance or clearly designed for extension             |
 | `NoInterfaceImplementation` | Concrete class that does not implement any interface                  | Keeps polymorphism explicit and substitution possible                                             |
 | `NoTraitUsage`              | Using traits in a class                                               | Traits blur object boundaries; prefer composition or delegation                                   |
