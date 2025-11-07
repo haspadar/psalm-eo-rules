@@ -57,4 +57,12 @@ final class NoNullableTypeCheckerTest extends TestCase
         $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoNullableTypeChecker/SuppressedClass.php');
         self::assertThat($result, new PsalmAnalysisConstraint(false));
     }
+
+    #[Test]
+    #[TestDox('Reports an error for nullable return types')]
+    public function reportsErrorForNullableReturn(): void
+    {
+        $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoNullableTypeChecker/NullableReturn.php');
+        self::assertThat($result, new PsalmAnalysisConstraint(true));
+    }
 }

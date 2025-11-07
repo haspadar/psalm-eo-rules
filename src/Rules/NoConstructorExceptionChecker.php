@@ -10,6 +10,9 @@ namespace Haspadar\PsalmEoRules\Rules;
 
 use Haspadar\PsalmEoRules\Rules\Issue\NoConstructorException;
 use Haspadar\PsalmEoRules\Suppression;
+use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Throw_;
 use Psalm\CodeLocation;
 use Psalm\IssueBuffer;
@@ -67,13 +70,47 @@ final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInte
 
     private static function isInsideClosure(AfterExpressionAnalysisEvent $event, Throw_ $expr): bool
     {
-        $filePath = $event->getStatementsSource()->getFilePath();
-        $code = @file_get_contents($filePath);
-        if ($code === false) {
+        $source = $event->getStatementsSource();
+        $stmts  = $source->getCodebase()->getStatementsForFile($source->getFilePath());
+        if (!is_array($stmts)) {
             return false;
         }
 
-        $before = substr($code, max(0, $expr->getStartFilePos() - 50), 50);
-        return preg_match('/fn\s*\(|function\s*\(/', $before) === 1;
+        $throwStart = $expr->getStartFilePos();
+        $throwEnd   = $expr->getEndFilePos();
+        $found      = false;
+
+        $walk = static function (array $nodes) use (&$walk, $throwStart, $throwEnd, &$found): void {
+            foreach ($nodes as $node) {
+                if ($node instanceof ArrowFunction || $node instanceof Closure) {
+                    $fnStart = $node->getStartFilePos();
+                    $fnEnd   = $node->getEndFilePos();
+
+                    if ($throwStart >= $fnStart && $throwEnd <= $fnEnd) {
+                        $found = true;
+                        return;
+                    }
+                }
+
+                foreach (get_object_vars($node) as $prop) {
+                    if (is_array($prop)) {
+                        $walk($prop);
+                    } elseif ($prop instanceof Node) {
+                        $walk([$prop]);
+                    }
+                }
+
+                if ($found) {
+                    return;
+                }
+            }
+        };
+
+        $walk($stmts);
+
+        return $found;
     }
+
+
+
 }

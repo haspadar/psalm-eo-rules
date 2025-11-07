@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0] – 2025-11-07
+### Added
+- `NoNullableTypeChecker` now validates return types for nullable declarations
+
+### Changed
+- `NoConstructorExceptionChecker` improved:
+    - Ignores `throw` inside closures and arrow functions
+    - Uses positional AST checks for accurate detection
+
+### Removed
+- `NoIssetChecker` rule (false positives on `??`, redundant under EO invariants)
+- `NoEmptyChecker` rule (redundant; `NoNullChecker` already enforces non-empty object semantics)
+
 ## [0.4.1] – 2025-11-07
 ### Fixed
 - `NoConstructorExceptionChecker` no longer reports `throw` inside closures or arrow functions

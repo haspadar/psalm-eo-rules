@@ -15,25 +15,15 @@ use Psalm\Plugin\EventHandler\AfterCodebasePopulatedInterface;
 use Psalm\Plugin\EventHandler\Event\AfterCodebasePopulatedEvent;
 
 /**
- * Detects nullable parameter types.
+ * Detects nullable parameter and return types.
  *
  * EO rule: nullable types violate explicitness and lead to optional behavior.
  * Use `Optional` or `NullObject` abstractions instead of `?Type`.
  */
 final class NoNullableTypeChecker implements AfterCodebasePopulatedInterface
 {
-    /**
-     * Suppression code name used in `@psalm-suppress`.
-     *
-     * @var string
-     */
     private const SUPPRESS = 'NoNullableType';
 
-    /**
-     * Reports an issue when a parameter type is declared as nullable.
-     *
-     * @param AfterCodebasePopulatedEvent $event Psalm event providing codebase context
-     */
     #[\Override]
     public static function afterCodebasePopulated(AfterCodebasePopulatedEvent $event): void
     {
@@ -49,27 +39,46 @@ final class NoNullableTypeChecker implements AfterCodebasePopulatedInterface
                     $classSuppressed
                     || in_array(self::SUPPRESS, $method->suppressed_issues, true);
 
+                // параметры
                 foreach ($method->params as $param) {
                     $type = $param->type;
                     $loc  = $param->location ?? $method->location;
 
-                    $violation =
+                    if (
                         !$methodSuppressed
                         && $type !== null
                         && $type->isNullable()
-                        && $loc instanceof CodeLocation;
-
-                    if ($violation) {
+                        && $loc instanceof CodeLocation
+                    ) {
                         IssueBuffer::accepts(
                             new NoNullableTypeIssue(
                                 sprintf(
-                                    'Nullable type "%s" violates EO rules. Use Optional or NullObject.',
+                                    'Nullable parameter type "%s" violates EO rules. Use Optional or NullObject.',
                                     $type->getId()
                                 ),
                                 $loc
                             )
                         );
                     }
+                }
+
+                // возвращаемое значение
+                $return = $method->return_type;
+                if (
+                    !$methodSuppressed
+                    && $return !== null
+                    && $return->isNullable()
+                    && $method->location instanceof CodeLocation
+                ) {
+                    IssueBuffer::accepts(
+                        new NoNullableTypeIssue(
+                            sprintf(
+                                'Nullable return type "%s" violates EO rules. Use Optional or NullObject.',
+                                $return->getId()
+                            ),
+                            $method->location
+                        )
+                    );
                 }
             }
         }

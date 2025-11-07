@@ -65,4 +65,12 @@ final class NoConstructorExceptionCheckerTest extends TestCase
         $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoConstructorExceptionChecker/ClosureThrow.php');
         self::assertThat($result, new PsalmAnalysisConstraint(false));
     }
+
+    #[Test]
+    #[TestDox('Ignores throw inside arrow functions')]
+    public function ignoresThrowInsideArrowFunction(): void
+    {
+        $result = $this->runner->analyze(__DIR__ . '/../Fixtures/NoConstructorExceptionChecker/ArrowFunctionThrow.php');
+        self::assertThat($result, new PsalmAnalysisConstraint(false));
+    }
 }
