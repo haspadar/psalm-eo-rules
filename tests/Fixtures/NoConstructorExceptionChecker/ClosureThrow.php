@@ -14,7 +14,7 @@ final class ClosureThrow implements WithoutMethods
 {
     public function __construct()
     {
-        $fn = fn() => throw new \RuntimeException('inside closure');
+        $fn = fn () => throw new \RuntimeException('inside closure');
         $fn();
     }
 }

@@ -8,9 +8,9 @@ declare(strict_types=1);
 
 namespace Haspadar\PsalmEoRules\Rules;
 
-use PhpParser\Node\Expr\Throw_;
 use Haspadar\PsalmEoRules\Rules\Issue\NoConstructorException;
 use Haspadar\PsalmEoRules\Suppression;
+use PhpParser\Node\Expr\Throw_;
 use Psalm\CodeLocation;
 use Psalm\IssueBuffer;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
