@@ -39,7 +39,6 @@ final class NoNullableTypeChecker implements AfterCodebasePopulatedInterface
                     $classSuppressed
                     || in_array(self::SUPPRESS, $method->suppressed_issues, true);
 
-                // параметры
                 foreach ($method->params as $param) {
                     $type = $param->type;
                     $loc  = $param->location ?? $method->location;
@@ -62,7 +61,6 @@ final class NoNullableTypeChecker implements AfterCodebasePopulatedInterface
                     }
                 }
 
-                // возвращаемое значение
                 $return = $method->return_type;
                 if (
                     !$methodSuppressed

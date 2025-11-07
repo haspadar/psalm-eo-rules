@@ -48,8 +48,8 @@ final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInte
             new NoConstructorException(
                 'Throwing exceptions inside constructors violates EO rules. '
                 . 'Use a factory or validation object instead.',
-                new CodeLocation($event->getStatementsSource(), $expr)
-            )
+                new CodeLocation($event->getStatementsSource(), $expr),
+            ),
         );
 
         return null;
@@ -71,20 +71,24 @@ final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInte
     private static function isInsideClosure(AfterExpressionAnalysisEvent $event, Throw_ $expr): bool
     {
         $source = $event->getStatementsSource();
-        $stmts  = $source->getCodebase()->getStatementsForFile($source->getFilePath());
+        $stmts = $source->getCodebase()->getStatementsForFile($source->getFilePath());
         if (!is_array($stmts)) {
             return false;
         }
 
         $throwStart = $expr->getStartFilePos();
-        $throwEnd   = $expr->getEndFilePos();
-        $found      = false;
+        $throwEnd = $expr->getEndFilePos();
+        $found = false;
 
         $walk = static function (array $nodes) use (&$walk, $throwStart, $throwEnd, &$found): void {
             foreach ($nodes as $node) {
+                if (!$node instanceof Node) {
+                    continue;
+                }
+
                 if ($node instanceof ArrowFunction || $node instanceof Closure) {
                     $fnStart = $node->getStartFilePos();
-                    $fnEnd   = $node->getEndFilePos();
+                    $fnEnd = $node->getEndFilePos();
 
                     if ($throwStart >= $fnStart && $throwEnd <= $fnEnd) {
                         $found = true;
@@ -92,7 +96,8 @@ final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInte
                     }
                 }
 
-                foreach (get_object_vars($node) as $prop) {
+                foreach ($node->getSubNodeNames() as $name) {
+                    $prop = $node->$name;
                     if (is_array($prop)) {
                         $walk($prop);
                     } elseif ($prop instanceof Node) {
@@ -110,7 +115,6 @@ final class NoConstructorExceptionChecker implements AfterExpressionAnalysisInte
 
         return $found;
     }
-
 
 
 }
