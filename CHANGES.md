@@ -6,8 +6,8 @@
 
 ### Changed
 - `NoConstructorExceptionChecker` improved:
-    - Ignores `throw` inside closures and arrow functions
-    - Uses positional AST checks for accurate detection
+- Ignores `throw` inside closures and arrow functions
+- Uses positional AST checks for accurate detection
 
 ### Removed
 - `NoIssetChecker` rule (false positives on `??`, redundant under EO invariants)
