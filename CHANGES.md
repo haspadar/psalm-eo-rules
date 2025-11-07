@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1] – 2025-11-07
+### Fixed
+- `NoConstructorExceptionChecker` no longer reports `throw` inside closures or arrow functions
+- Added positional source check to detect lazy evaluation contexts (e.g. `fn() => throw …`)
+- Ensures EO rule compliance for deferred exceptions
+
 ## [0.4.0] – 2025-11-06
 ### Added
 - Unified `NoNullChecker` rule combining literal and argument detection
